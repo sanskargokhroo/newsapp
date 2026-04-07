@@ -17,13 +17,13 @@ const News = (props)=> {
 
   const updateNews = async()=> {
     props.setProgress(10);
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+    const url = `https://gnews.io/api/v4/top-headlines?category=${props.category}&lang=en&country=${props.country}&max=${props.pageSize}&page=${page}&apikey=${props.apiKey}`;
     setLoading(true);
     try {
       let data = await fetch(url);
       let parsedData = await data.json();
       setArticles(parsedData.articles || []);
-      setTotalResults(parsedData.totalResults || 0);
+      setTotalResults(parsedData.totalArticles || 0);
     } catch (error) {
       console.error("Error fetching news:", error);
       setArticles([]);
@@ -41,13 +41,13 @@ const News = (props)=> {
 
   const fetchMoreData = async () => {
    
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
+    const url = `https://gnews.io/api/v4/top-headlines?category=${props.category}&lang=en&country=${props.country}&max=${props.pageSize}&page=${page+1}&apikey=${props.apiKey}`;
      setPage(page + 1); 
     try {
       let data = await fetch(url);
       let parsedData = await data.json();
       setArticles(articles.concat(parsedData.articles || []));
-      setTotalResults(parsedData.totalResults || 0);
+      setTotalResults(parsedData.totalArticles || 0);
     } catch (error) {
       console.error("Error fetching more news:", error);
     }
@@ -71,7 +71,7 @@ const News = (props)=> {
               return ( 
               <div className="col-md-4" key={element.url}>
                   <NewsItems title={element.title ? element.title : ""}
-                    description={element.description? element.description.slice(0, 88): ""}imageUrl={element.urlToImage}newsUrl={element.url}author={element.author ? element.author : "Unknown"}date={element.publishedAt? new Date(element.publishedAt).toGMTString(): "Unknown"}
+                    description={element.description? element.description.slice(0, 88): ""}imageUrl={element.image}newsUrl={element.url}author={element.source.name ? element.source.name : "Unknown"}date={element.publishedAt? new Date(element.publishedAt).toGMTString(): "Unknown"}
                     source={element.source.name} />
                 </div>)
             })}
